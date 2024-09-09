@@ -1,7 +1,19 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-mongoose.connect("mongodb+srv://<credentials>@assignments.xm7vc7c.mongodb.net/paytm")
-.then(() => console.log("Database connection successful"));
+const MONGODB_URL =
+  process.env.MONGODB_URL || "mongodb://localhost:27017/paytm";
+
+const database = () => {
+  mongoose
+    .connect(MONGODB_URL)
+    .then(() => {
+      console.log("Connected to MongoDB");
+    })
+    .catch((error) => {
+      console.error("Error connecting to MongoDB:", error);
+    });
+};
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -32,5 +44,23 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  balance: {
+    type: Number,
+    required: true,
+  },
+});
+
 const User = mongoose.model("User", userSchema);
-module.exports = { User };
+const Account = mongoose.model("Account", accountSchema);
+
+module.exports = {
+  database,
+  User,
+  Account,
+};
