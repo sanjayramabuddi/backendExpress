@@ -72,13 +72,12 @@ router.post("/signin", async (req, res) => {
 
   if (!success) {
     return res.status(411).json({
-      message: "Email already taken / Incorrect inputs",
+      message: "Incorrect inputs",
     });
   }
 
   const user = await User.findOne({
     username: req.body.username,
-    password: req.body.password,
   });
 
   if (user) {
